@@ -1,2 +1,7 @@
 *.class
 *.log
+*.cache
+*.history
+**/resolution-cache
+project/target
+target/streams

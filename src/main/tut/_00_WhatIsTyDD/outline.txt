@@ -1,0 +1,12 @@
+Test Driven
+Model Driven
+Domain Driven
+Type Driven
+
+Encode the invariants in the Type System
+Type, Define, Refine
+
+Only three skills are required.
+1. traits
+2. type parameters
+3. composition
