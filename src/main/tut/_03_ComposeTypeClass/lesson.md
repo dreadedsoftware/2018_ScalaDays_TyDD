@@ -14,6 +14,7 @@ trait Or[A, B]{
   def right: Option[B]
 }
 ```
+*Note: A further refinement is left as a point of contemplation.*
 
 # Implicits
 The `implicit` keyword is one of the most useful (and confusing) constructs in Scala. It allows the developer to imply requirements without listing them in turn. We can employ it thus
@@ -46,7 +47,7 @@ def zip4[F[_], A, B, C, D](a: F[A], b: F[B], c: F[C], d: F[D], F: Zip[F]): F[(A,
 def zip5[F[_], A, B, C, D, E](a: F[A], b: F[B], c: F[C], d: F[D], e: F[E], F: Zip[F]): F[(A, (B, (C, (D, E))))] =
   zip(a, zip(b, zip(c, zip(d, e, F), F), F), F)
 ```
-With `implicit` this becomes
+This is more cumbersome than it seems necessary. Through the `implicit` keyword, Scala provides a mechanism for threading type class instances through call stacks
 ```tut:book
 implicit def zip[F[_], A, B](implicit a: F[A], b: F[B], F: Zip[F]): F[(A, B)] =
   F.zip(a, b)
@@ -121,7 +122,7 @@ implicit def e: List[Char] = List('5')
 implicit def zip[F[_], G[_, _], A, B](implicit F: Zip[F, G], a: F[A], b: F[B]): F[G[A, B]] =
   F.zip(a, b)
 
-def zip5[F[_], G[_, _], A: F, B: F, C: F, D: F, E: F](implicit F: Zip[F, G]): F[G[A, G[B, G[C, G[D, E]]]]] =
+def zip3[F[_], G[_, _], A: F, B: F, C: F](implicit F: Zip[F, G]): F[G[A, G[B, C]]] =
   implicitly
 def zip5[F[_], G[_, _], A: F, B: F, C: F, D: F, E: F](implicit F: Zip[F, G]): F[G[A, G[B, G[C, G[D, E]]]]] =
   implicitly
