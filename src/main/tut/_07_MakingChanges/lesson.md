@@ -10,7 +10,7 @@ implicit def zipListTuple2: Zip[List, Tuple2] = new Zip[List, Tuple2]{
 }
 implicit def zip[F[_], G[_, _], A, B](implicit F: Zip[F, G], a: F[A], b: F[B]): F[G[A, B]] =
   F.zip(a, b)
-  
+
 implicit def a: List[Int] = List(1)
 implicit def b: List[String] = List("2")
 implicit def c: List[Double] = List(3.0)
@@ -44,7 +44,7 @@ object Application{
         }
       }
     }
-  
+
   implicit def processCoproduct[Id1, Id2, Tree1, Tree2](implicit
     app1: Application[Id1, Tree1],
     app2: Application[Id2, Tree2]): Application[Id1 XOR Id2, Tree1 XOR Tree2] =
@@ -125,11 +125,11 @@ implicit def processor3 = TreeProcessor.create[Tree3](println)
 Now, that we have all our pieces, we can build our `Application`s and combine them
 ```tut:book
 import Application._
-//~*~ Should be able to implicitly here!!! !!! !!! ~*~
 type App1 = Tree1 AND Tree2 AND Tree3
-implicit val app1 = Application.process(id1, tree1, processor1)//implicitly[Application[One, Tree1]]
-implicit val app2 = Application.process(id1, tree2, processor2)
-implicit val app3 = Application.process(id1, tree3, processor3)
+
+implicit val app1 = implicitly[Application[One, Tree1]]
+implicit val app2 = implicitly[Application[One, Tree2]]
+implicit val app3 = implicitly[Application[One, Tree3]]
 
 implicit val app = implicitly[Application[One, App1]]
 ```
@@ -137,7 +137,7 @@ implicit val app = implicitly[Application[One, App1]]
 ## Write two more Product trees.
 Following the same pattern. First we need our `Tree`s
 ```tut:book
-type Tree21 = List[(Int, (String, (Double, (Long, Char))))]
+type Tree21 = List[(Int, (String, (Double, (Char, Long))))]
 type Tree22 = List[((Int, String), (Double, (Long, Char)))]
 type Tree23 = List[((Int, (String, Double)), (Long, Char))]
 implicit val tree21 = implicitly[Tree21]
@@ -171,12 +171,13 @@ Finally, we put all the pieces together
 ```tut:book
 type App2 = Tree21 AND Tree22 AND Tree23
 type App3 = Tree31 AND Tree32 AND Tree33
-implicit val app21 = Application.process(id2, tree21, processor21)
-implicit val app22 = Application.process(id2, tree22, processor22)
-implicit val app23 = Application.process(id2, tree23, processor23)
-implicit val app31 = Application.process(id3, tree31, processor31)
-implicit val app32 = Application.process(id3, tree32, processor32)
-implicit val app33 = Application.process(id3, tree33, processor33)
+
+implicit val app21 = implicitly[Application[Two, Tree21]]
+implicit val app22 = implicitly[Application[Two, Tree22]]
+implicit val app23 = implicitly[Application[Two, Tree23]]
+implicit val app31 = implicitly[Application[Three, Tree31]]
+implicit val app32 = implicitly[Application[Three, Tree32]]
+implicit val app33 = implicitly[Application[Three, Tree33]]
 
 implicit val app2 = implicitly[Application[Two, App2]]
 implicit val app3 = implicitly[Application[Three, App3]]

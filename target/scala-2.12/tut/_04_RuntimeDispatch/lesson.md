@@ -12,7 +12,9 @@ We can take `Tuple2` as `G` but, what for `F`? We need a type which given an `A`
 type Identity[A] = A
 // defined type alias Identity
 ```
-*Yes, this exploits an unsoundness in the type system but, we can do anything we want as long as we are careful*
+*Yes, this exploits an unsoundness in the type system but, we can do anything we want as long as we are careful.*
+
+__Note: There is a safer way to encode the Identity we can explore later.__
 ```scala
 implicit def nonEmptyBinaryTree: Zip[Identity, Tuple2] = new Zip[Identity, Tuple2]{
   override def zip[A, B](a: Identity[A], b: Identity[B]): Identity[(A, B)] = (a, b)

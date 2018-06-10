@@ -3,5 +3,6 @@
 *.cache
 *.history
 **/resolution-cache
+.vs
 project/target
 target/streams

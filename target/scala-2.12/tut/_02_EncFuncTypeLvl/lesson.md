@@ -54,6 +54,7 @@ def zip3[F[_], A, B, C](a: F[A], b: F[B], c: F[C], F: Zip[F]): F[(A, (B, C))] =
 // zip3: [F[_], A, B, C](a: F[A], b: F[B], c: F[C], F: Zip[F])F[(A, (B, C))]
 ```
 When we abstract a value, we get a type parameter; this helps us in a sense bind a value to a type. The same thing goes for functions except we need type classes to do so. Type classes sit at a higher level of abstraction; they take type parameters.
+__Note: This is not the typical definition of a type class. This definition is just super convenient for TyDD!!!__
 
 #Exercises
 1. Write a type class which is *both* A and B.

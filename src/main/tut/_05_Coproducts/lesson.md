@@ -7,7 +7,7 @@ implicit def zipListTuple2: Zip[List, Tuple2] = new Zip[List, Tuple2]{
 }
 implicit def zip[F[_], G[_, _], A, B](implicit F: Zip[F, G], a: F[A], b: F[B]): F[G[A, B]] =
   F.zip(a, b)
-  
+
 implicit def a: List[Int] = List(1)
 implicit def b: List[String] = List("2")
 implicit def c: List[Double] = List(3.0)
@@ -48,6 +48,9 @@ We just need a function which dispatches these applications
 ```tut:book
 trait IdOne
 trait IdTwo
+```
+_Note: Here we have two traits with no concrete definitions. These traits have no inhabitants, they are used to give the compiler hints during unification._
+```tut:book
 implicit def treeId1 = new TreeId[IdOne]{
   override def id: Int = 1
 }
@@ -145,7 +148,7 @@ object Application{
         }
       }
     }
-  
+
   implicit def process[Id1, Id2, Tree1, Tree2](implicit
     app1: Application[Id1, Tree1],
     app2: Application[Id2, Tree2]): Application[Id1 XOR Id2, Tree1 XOR Tree2] =

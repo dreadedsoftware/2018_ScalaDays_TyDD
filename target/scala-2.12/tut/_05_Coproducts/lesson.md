@@ -10,7 +10,9 @@ trait IdOne
 
 trait IdTwo
 // defined trait IdTwo
-
+```
+_Note: Here we have two traits with no concrete definitions. These traits have no inhabitants, they are used to give the compiler hints during unification._
+```scala
 implicit def treeId1 = new TreeId[IdOne]{
   override def id: Int = 1
 }
@@ -70,7 +72,7 @@ implicit val unzipListTuple2 = new Unzip[List, Tuple2]{
     (fg.map(_._1), fg.map(_._2))
   }
 }
-// unzipListTuple2: Unzip[List,Tuple2] = $anon$1@5c454447
+// unzipListTuple2: Unzip[List,Tuple2] = $anon$1@766334
 ```
 
 Now we implement our function
@@ -125,7 +127,7 @@ object Application{
         }
       }
     }
-  
+
   implicit def process[Id1, Id2, Tree1, Tree2](implicit
     app1: Application[Id1, Tree1],
     app2: Application[Id2, Tree2]): Application[Id1 XOR Id2, Tree1 XOR Tree2] =
@@ -149,7 +151,7 @@ import Application._
 // import Application._
 
 implicitly[Application[IdOne XOR IdTwo, Tree1 XOR Tree2]]
-// res3: Application[XOR[IdOne,IdTwo],XOR[Tree1,Tree2]] = Application$$anon$2@30c61ef3
+// res3: Application[XOR[IdOne,IdTwo],XOR[Tree1,Tree2]] = Application$$anon$2@19207a8
 ```
 I prefer the following
 ```scala
@@ -160,7 +162,7 @@ type Trees = Tree1 XOR Tree2
 // defined type alias Trees
 
 implicitly[Application[IDs, Trees]]
-// res4: Application[IDs,Trees] = Application$$anon$2@420dc540
+// res4: Application[IDs,Trees] = Application$$anon$2@8e5c8f
 ```
 This way the declaration, implementation and implicit magic are all kept separate.
 

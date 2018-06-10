@@ -16,6 +16,7 @@ trait Or[A, B]{
 }
 // defined trait Or
 ```
+*Note: A further refinement is left as a point of contemplation.*
 
 # Implicits
 The `implicit` keyword is one of the most useful (and confusing) constructs in Scala. It allows the developer to imply requirements without listing them in turn. We can employ it thus
@@ -57,7 +58,7 @@ def zip5[F[_], A, B, C, D, E](a: F[A], b: F[B], c: F[C], d: F[D], e: F[E], F: Zi
   zip(a, zip(b, zip(c, zip(d, e, F), F), F), F)
 // zip5: [F[_], A, B, C, D, E](a: F[A], b: F[B], c: F[C], d: F[D], e: F[E], F: Zip[F])F[(A, (B, (C, (D, E))))]
 ```
-With `implicit` this becomes
+This is more cumbersome than it seems necessary. Through the `implicit` keyword, Scala provides a mechanism for threading type class instances through call stacks
 ```scala
 implicit def zip[F[_], A, B](implicit a: F[A], b: F[B], F: Zip[F]): F[(A, B)] =
   F.zip(a, b)
@@ -162,9 +163,9 @@ implicit def zip[F[_], G[_, _], A, B](implicit F: Zip[F, G], a: F[A], b: F[B]): 
   F.zip(a, b)
 // zip: [F[_], G[_, _], A, B](implicit F: Zip[F,G], implicit a: F[A], implicit b: F[B])F[G[A,B]]
 
-def zip5[F[_], G[_, _], A: F, B: F, C: F, D: F, E: F](implicit F: Zip[F, G]): F[G[A, G[B, G[C, G[D, E]]]]] =
+def zip3[F[_], G[_, _], A: F, B: F, C: F](implicit F: Zip[F, G]): F[G[A, G[B, C]]] =
   implicitly
-// zip5: [F[_], G[_, _], A, B, C, D, E](implicit evidence$1: F[A], implicit evidence$2: F[B], implicit evidence$3: F[C], implicit evidence$4: F[D], implicit evidence$5: F[E], implicit F: Zip[F,G])F[G[A,G[B,G[C,G[D,E]]]]]
+// zip3: [F[_], G[_, _], A, B, C](implicit evidence$1: F[A], implicit evidence$2: F[B], implicit evidence$3: F[C], implicit F: Zip[F,G])F[G[A,G[B,C]]]
 
 def zip5[F[_], G[_, _], A: F, B: F, C: F, D: F, E: F](implicit F: Zip[F, G]): F[G[A, G[B, G[C, G[D, E]]]]] =
   implicitly
@@ -184,12 +185,12 @@ zip5[List, Tuple2, String, Int, Double, Long, Char]
 for `And`
 ```scala
 zip5[List, And, Int, String, Double, Long, Char]
-// res4: List[And[Int,And[String,And[Double,And[Long,Char]]]]] = List($anon$1$$anon$2@4e24602a)
+// res4: List[And[Int,And[String,And[Double,And[Long,Char]]]]] = List($anon$1$$anon$2@1f18efa)
 ```
 And finally `Or`
 ```scala
 zip5[List, Or, Int, String, Double, Long, Char]
-// res5: List[Or[Int,Or[String,Or[Double,Or[Long,Char]]]]] = List($anon$1$$anon$2@74955631)
+// res5: List[Or[Int,Or[String,Or[Double,Or[Long,Char]]]]] = List($anon$1$$anon$2@1d2f09)
 ```
 The business logic need not change. All we need to do is make sure all of our type class instances are in scope and we can rearrange and redeclare at will. Type Driven Development is the most declarative discipline I have found; declare a bunch of types and instances, the compiler does the rest.
 

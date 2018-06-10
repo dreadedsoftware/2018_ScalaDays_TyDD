@@ -85,16 +85,16 @@ object Application{
 ```
 
 # Products
-Inevitably, we will run into a situation where we will need to process multiple trees given a single id. Where do we even begin here? Let's just begin and see where it takes us.
+Inevitably, we will run into a situation where we will need to process multiple trees given a single id. Where do we even begin here? Let's just pick a place and see where it takes us.
 
 We are looking to take two `Application`s both of which have the same id and combine them into one larger `Application`.
 Using our `XOR` constructor as a guide we have
 ```scala
 implicit def process[Id, Tree1, Tree2](implicit
   app1: Application[Id, Tree1],
-  app2: Application[Id, Tree2]): Application[Id, Tree1 AND tree2] = ???
+  app2: Application[Id, Tree2]): Application[Id, Tree1 AND Tree2] = ???
 // <console>:24: error: not found: type AND
-//          app2: Application[Id, Tree2]): Application[Id, Tree1 AND tree2] = ???
+//          app2: Application[Id, Tree2]): Application[Id, Tree1 AND Tree2] = ???
 //                                                               ^
 ```
 We can use `Tuple2` as `AND`
@@ -177,6 +177,6 @@ object Application{
 A Product is a way to declare all of some set of things simultaneously. When we want to execute multiple trees given a single matching id, we can use a product. Classes are an example of Products. A class is all of its members simultaneously, it is not simply a single one of its members.
 
 # Exercises
-1. Write three trees and make them into a single product Application.
-2. Write two more Product trees.
-3. Write make a Coproduct tree from the 3 Product trees in the previous exercises.
+1. Write three trees and make them into a single product `Application`.
+2. Write two more Product `Application`s.
+3. Write make a Coproduct `Application` from the 3 Product `Application`s in the previous exercises.
