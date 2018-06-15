@@ -88,16 +88,16 @@ type App1 = Tree1 AND Tree2 AND Tree3
 // defined type alias App1
 
 implicit val app1 = implicitly[Application[One, Tree1]]
-// app1: Application[One,Tree1] = Application$$anon$1@769dab
+// app1: Application[One,Tree1] = Application$$anon$1@5d02ed
 
 implicit val app2 = implicitly[Application[One, Tree2]]
-// app2: Application[One,Tree2] = Application$$anon$1@119d333
+// app2: Application[One,Tree2] = Application$$anon$1@66969a
 
 implicit val app3 = implicitly[Application[One, Tree3]]
-// app3: Application[One,Tree3] = Application$$anon$1@374a67
+// app3: Application[One,Tree3] = Application$$anon$1@b5ce3e
 
 implicit val app = implicitly[Application[One, App1]]
-// app: Application[One,App1] = Application$$anon$3@7de2f0
+// app: Application[One,App1] = Application$$anon$3@f1527
 ```
 
 ## Write two more Product trees.
@@ -156,22 +156,22 @@ implicit def id3: TreeId[Three] = TreeId.create[Three](3)
 `TreeProcessor` instances
 ```scala
 implicit val processor21 = TreeProcessor.create[Tree21](println)
-// processor21: TreeProcessor[Tree21] = TreeProcessor$$anon$1@1f5c104
+// processor21: TreeProcessor[Tree21] = TreeProcessor$$anon$1@5a63e2
 
 implicit val processor22 = TreeProcessor.create[Tree22](println)
-// processor22: TreeProcessor[Tree22] = TreeProcessor$$anon$1@edff2
+// processor22: TreeProcessor[Tree22] = TreeProcessor$$anon$1@13c879b
 
 implicit val processor23 = TreeProcessor.create[Tree23](println)
-// processor23: TreeProcessor[Tree23] = TreeProcessor$$anon$1@17f2b4b
+// processor23: TreeProcessor[Tree23] = TreeProcessor$$anon$1@14c3236
 
 implicit val processor31 = TreeProcessor.create[Tree31](println)
-// processor31: TreeProcessor[Tree31] = TreeProcessor$$anon$1@17bd4d3
+// processor31: TreeProcessor[Tree31] = TreeProcessor$$anon$1@16ef644
 
 implicit val processor32 = TreeProcessor.create[Tree32](println)
-// processor32: TreeProcessor[Tree32] = TreeProcessor$$anon$1@6fe6c5
+// processor32: TreeProcessor[Tree32] = TreeProcessor$$anon$1@1b48968
 
 implicit val processor33 = TreeProcessor.create[Tree33](println)
-// processor33: TreeProcessor[Tree33] = TreeProcessor$$anon$1@19745f5
+// processor33: TreeProcessor[Tree33] = TreeProcessor$$anon$1@113d27a
 ```
 Finally, we put all the pieces together
 ```scala
@@ -182,40 +182,44 @@ type App3 = Tree31 AND Tree32 AND Tree33
 // defined type alias App3
 
 implicit val app21 = implicitly[Application[Two, Tree21]]
-// app21: Application[Two,Tree21] = Application$$anon$1@1b58e45
+// app21: Application[Two,Tree21] = Application$$anon$1@1bf1b9c
 
 implicit val app22 = implicitly[Application[Two, Tree22]]
-// app22: Application[Two,Tree22] = Application$$anon$1@1f0ded5
+// app22: Application[Two,Tree22] = Application$$anon$1@aae482
 
 implicit val app23 = implicitly[Application[Two, Tree23]]
-// app23: Application[Two,Tree23] = Application$$anon$1@195f474
+// app23: Application[Two,Tree23] = Application$$anon$1@1251cec
 
 implicit val app31 = implicitly[Application[Three, Tree31]]
-// app31: Application[Three,Tree31] = Application$$anon$1@127dc48
+// app31: Application[Three,Tree31] = Application$$anon$1@10e085b
 
 implicit val app32 = implicitly[Application[Three, Tree32]]
-// app32: Application[Three,Tree32] = Application$$anon$1@32db71
+// app32: Application[Three,Tree32] = Application$$anon$1@339a25
 
 implicit val app33 = implicitly[Application[Three, Tree33]]
-// app33: Application[Three,Tree33] = Application$$anon$1@18c930c
+// app33: Application[Three,Tree33] = Application$$anon$1@713d9c
 
 implicit val app2 = implicitly[Application[Two, App2]]
-// app2: Application[Two,App2] = Application$$anon$3@15cbd95
+// app2: Application[Two,App2] = Application$$anon$3@65e2c6
 
 implicit val app3 = implicitly[Application[Three, App3]]
-// app3: Application[Three,App3] = Application$$anon$3@a9e808
+// app3: Application[Three,App3] = Application$$anon$3@421bb
 ```
 
-## Write make a Coproduct tree from the 3 Product trees in the previous exercises.
+## Write a Coproduct tree from the 3 Product trees in the previous exercises.
 After the other two parts, this falls out pretty quickly.
 ```scala
 val application =
   implicitly[Application[One XOR Two XOR Three, App1 XOR App2 XOR App3]]
-// application: Application[XOR[XOR[One,Two],Three],XOR[XOR[App1,App2],App3]] = Application$$anon$2@6fe32d
+// application: Application[XOR[XOR[One,Two],Three],XOR[XOR[App1,App2],App3]] = Application$$anon$2@3e08c0
 ```
 
 # Making Changes
-These Applications are super simple. All computation needs to happen in a single `TreeProcessor`. This is fine for sufficiently simple use cases but as the business grows, this library will be outgrown with it. Let's add a `Write` step to our `Application`s.
+These Applications are super simple.
+All computation needs to happen in a single `TreeProcessor`.
+This is fine for sufficiently simple use cases but as the business grows,
+this library will be outgrown with it.
+Let's add a `Write` step to our `Application`s.
 
 First, we need to make the `TreeProcessor` produce an output.
 ```scala
@@ -235,7 +239,7 @@ object TreeProcessor{
 // Companions must be defined together; you may wish to use :paste mode for this.
 ```
 
-- Note On The Aux Pattern: On the JVM, parameterized types are not reified (type erasure). The Aux Pattern allows us to use a type member as a type parameter. This gives us the ability to reference the type far after erasure would have occurred.
+- Note On The Aux Pattern: On the JVM, parameterized types are not reified (type erasure). The Aux Pattern allows us to use a type member as a type parameter. This gives us the ability to reference the type far after erasure would have occurred while holding onto the familiar type parameter syntax. Commonly, if a type is in covariant position, it is provided as a type member rather than type parameter.
 
 Now, we need a new type class for our `Write` step.
 ```scala

@@ -183,7 +183,7 @@ implicit val app2 = implicitly[Application[Two, App2]]
 implicit val app3 = implicitly[Application[Three, App3]]
 ```
 
-## Write make a Coproduct tree from the 3 Product trees in the previous exercises.
+## Write a Coproduct tree from the 3 Product trees in the previous exercises.
 After the other two parts, this falls out pretty quickly.
 ```tut:book
 val application =
@@ -191,7 +191,11 @@ val application =
 ```
 
 # Making Changes
-These Applications are super simple. All computation needs to happen in a single `TreeProcessor`. This is fine for sufficiently simple use cases but as the business grows, this library will be outgrown with it. Let's add a `Write` step to our `Application`s.
+These Applications are super simple.
+All computation needs to happen in a single `TreeProcessor`.
+This is fine for sufficiently simple use cases but as the business grows,
+this library will be outgrown with it.
+Let's add a `Write` step to our `Application`s.
 
 First, we need to make the `TreeProcessor` produce an output.
 ```tut:book
@@ -204,7 +208,7 @@ object TreeProcessor{
 }
 ```
 
-- Note On The Aux Pattern: On the JVM, parameterized types are not reified (type erasure). The Aux Pattern allows us to use a type member as a type parameter. This gives us the ability to reference the type far after erasure would have occurred.
+- Note On The Aux Pattern: On the JVM, parameterized types are not reified (type erasure). The Aux Pattern allows us to use a type member as a type parameter. This gives us the ability to reference the type far after erasure would have occurred while holding onto the familiar type parameter syntax. Commonly, if a type is in covariant position, it is provided as a type member rather than type parameter.
 
 Now, we need a new type class for our `Write` step.
 ```tut:book

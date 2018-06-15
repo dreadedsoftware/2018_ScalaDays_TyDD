@@ -205,9 +205,13 @@ object Application{
     }
 }
 ```
-A Product is a way to declare all of some set of things simultaneously. When we want to execute multiple trees given a single matching id, we can use a product. Classes are an example of Products. A class is all of its members simultaneously, it is not simply a single one of its members.
+A Product is a way to declare all of some set of things simultaneously.
+When we want to execute multiple trees given a single matching id,
+we can use a product. Classes are an example of Products.
+A class is all of its members simultaneously,
+it is not simply a single one of its members.
 
 # Exercises
 1. Write three trees and make them into a single product `Application`.
 2. Write two more Product `Application`s.
-3. Write make a Coproduct `Application` from the 3 Product `Application`s in the previous exercises.
+3. Write a Coproduct `Application` from the 3 Product `Application`s in the previous exercises.

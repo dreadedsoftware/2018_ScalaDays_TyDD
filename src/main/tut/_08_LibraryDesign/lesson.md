@@ -71,7 +71,7 @@ object Application{
         }
       }
     }
-  
+
   implicit def processCoproduct[Id1, Id2, Tree1, Tree2, Out1, Out2](implicit
     app1: Application[Id1, Tree1, Out1],
     app2: Application[Id2, Tree2, Out2]): Application[Id1 XOR Id2, Tree1 XOR Tree2, Out1 XOR Out2] =
@@ -145,7 +145,7 @@ object Application{
         }
       }
     }
-  
+
   implicit def processCoproduct[Id1, Id2, Tree1, Tree2, Out1, Out2](implicit
     app1: Application[Id1, Tree1, Out1],
     app2: Application[Id2, Tree2, Out2]): Application[Id1 XOR Id2, Tree1 XOR Tree2, Out1 XOR Out2] =
@@ -177,4 +177,62 @@ object Application{
     }
 }
 ```
+The only thing that needs to change is the basic constructor.
+The composition constructors remain unchanged.
+To add `QA` into our business logic, we only need to add `QA` instances
+to implicit scope. This is very similar to dependency injection.
 
+# Library Design
+Scala is not a type driven language; it is object functional.
+Doing type driven development in Scala takes a lot of planning
+and discipline.
+
+Thus far, we have used the mantra _Type, Define, Refine_
+which is great for simple applications abstracted
+out of simple functions. How do we begin to employ this discipline
+from the start of a large project?
+
+From reading a lot of code in the wild (GitHub is a treasure trove!),
+I have found some similarities in all the heavily typed code people
+write. Some of these things work when doing TyDD in general
+(Idris, Hskell, Scala, C#, Python) and some of them are Scala specific.
+We'll try to distinguish the generally applicable form the Scala-only.
+
+## There are only three tools
+### Functions, Type Parameters, Composition
+
+## Divorce Definitions from Constructions
+This can be done in any language (it is even forced in some). The idea
+is data and functions can be separated. Take this example
+```tut:book
+class Triangle(a: Int, b: Int, c: Int){
+  if(a <= 0 || b <= 0 || c <= 0) throw Exception
+  if(a+b<=c || b+c<=a || a+c<=b) throw Exception
+}
+```
+This constructs a triangle from three length figures. There are a couple
+problems here. First, if we need to construct a triangle from any other
+method we will be double validating the triangle (any new constructors
+must call the original constructor). Second, there is no straight forward
+way to express invalid data; we are forced to use clever notions like
+exceptions and assertions. Separating data from constructors we get
+```tut:book
+trait Triangle{
+	def a: Int
+	def b: Int
+	def c: Int
+}
+object Triangle{
+	def apply(_a: Int, _b: Int, _c: Int): Option[Triangle] = {
+	  if(_a <= 0 || _b <= 0 || _c <= 0) None
+	  else if(_a+_b<=_c || _b+_c<=_a || _a+_c<=_b) None
+	  else new Triangle{
+		override def a: Int = _a
+		override def b: Int = _b
+		override def c: Int = _c
+	  }
+	}
+}
+```
+And we can add as many constructors as we want without adding
+any extra ideas to our understanding.

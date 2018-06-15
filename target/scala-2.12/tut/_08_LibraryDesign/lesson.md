@@ -44,7 +44,7 @@ object Application{
         }
       }
     }
-  
+
   implicit def processCoproduct[Id1, Id2, Tree1, Tree2, Out1, Out2](implicit
     app1: Application[Id1, Tree1, Out1],
     app2: Application[Id2, Tree2, Out2]): Application[Id1 XOR Id2, Tree1 XOR Tree2, Out1 XOR Out2] =
@@ -125,7 +125,7 @@ object Application{
         }
       }
     }
-  
+
   implicit def processCoproduct[Id1, Id2, Tree1, Tree2, Out1, Out2](implicit
     app1: Application[Id1, Tree1, Out1],
     app2: Application[Id2, Tree2, Out2]): Application[Id1 XOR Id2, Tree1 XOR Tree2, Out1 XOR Out2] =
@@ -160,4 +160,27 @@ object Application{
 // warning: previously defined trait Application is not a companion to object Application.
 // Companions must be defined together; you may wish to use :paste mode for this.
 ```
+The only thing that needs to change is the basic constructor.
+The composition constructors remain unchanged.
+To add `QA` into our business logic, we only need to add `QA` instances
+to implicit scope. This is very similar to dependency injection.
 
+# Library Design
+Scala is not a type driven language; it is object functional.
+Doing type driven development in Scala takes a lot of planning
+and discipline.
+
+Thus far, we have used the mantra _Type, Define, Refine_
+which is great for simple applications abstracted
+out of simple functions. How do we begin to employ this discipline
+from the start of a large project?
+
+From reading a lot of code in the wild (GitHub is a treasure trove!),
+I have found some similarities in all the heavily typed code people
+write. Some of these things work when doing TyDD in general
+(Idris, Hskell, Scala, C#, Python) and some of them are Scala specific.
+We'll try to distinguish the generally applicable form the Scala-only.
+
+## Divorce Definitions from Constructions
+This can be done in any language (it is even forced in some). The idea
+is data and functions can be separated.
