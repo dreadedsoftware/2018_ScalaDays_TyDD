@@ -21,7 +21,7 @@ implicit def zipListTuple2: Zip[F, G] = new Zip[F, G]{
   override def zip[A, B](a: F[A], b: F[B]): F[G[A, B]] = a.zip(b)
 }
 ```
-Then we write our testpe A cases
+Then we write our test cases
 ```tut:book
 implicitly[Zip[F, G]]
 ```
@@ -53,9 +53,12 @@ implicitly[F[G[D, D]]]
 implicitly[F[G[A, B]]]
 implicitly[F[G[B, A]]]
 
-implicitly[F[G[A, G[B, G[C, D]]]]]
-implicitly[F[G[G[G[A, B], C], D]]]
-implicitly[F[G[G[A, B], G[C, D]]]]
+type Tree1 = F[G[A, G[B, G[C, D]]]]
+type Tree2 = F[G[G[G[A, B], C], D]]
+type Tree3 = F[G[G[A, B], G[C, D]]]
+implicitly[Tree1]
+implicitly[Tree2]
+implicitly[Tree3]
 ```
 What we are doing is testing semantics rather than functions and values.
 We write tests so that when we change our library code we make sure
@@ -68,16 +71,31 @@ type AND[A, B] = (A, B)
 trait TreeId[T]{
   def id: Int
 }
+object TreeId{
+  def apply[A](_id: Int): TreeId[A] = new TreeId[A]{
+    override def id: Int = _id
+  }
+}
+
 trait TreeProcessor[Tree]{
   type Out
   def process(in: Tree): Out
 }
 object TreeProcessor{
   type Aux[T, O] = TreeProcessor[T]{type Out = O}
+  def apply[A, B](f: A => B): Aux[A, B] = new TreeProcessor[A]{
+    type Out = B
+    override def process(in: A): B = f(in)
+  }
 }
 
 trait Write[ToWrite]{
   def write(toWrite: ToWrite): Unit
+}
+object Write{
+  def apply[A](f: A => Unit): Write[A] = new Write[A]{
+    override def write(a: A): Unit = f(a)
+  }
 }
 
 trait Application[Id, Tree, Out]{
@@ -89,13 +107,13 @@ object Application{
     tree: Tree,
     tProc: TreeProcessor.Aux[Tree, Out],
     write: Write[Out]): Application[Id, Tree, Out] =
-    new Application[Id, Tree, Out]{
+      new Application[Id, Tree, Out]{
       override def process(id: Int): Either[String, Int] = {
         if(id == treeId.id){
           write.write(tProc.process(tree))
           Right(id)
         }else{
-          Left(id.toString)
+          Left(treeId.id.toString)
         }
       }
     }
@@ -119,15 +137,80 @@ object Application{
     app2: Application[Id, Tree2, Out2]): Application[Id, Tree1 AND Tree2, Out1 AND Out2] =
     new Application[Id, Tree1 AND Tree2, Out1 AND Out2]{
       override def process(id: Int): Either[String, Int] = {
-        def wrong = Left(id.toString)
+        def wrong(id: String) = Left(id)
         def right = Right(id)
         (app1.process(id), app2.process(id)) match{
           case (Right(_), Right(_)) => right
-          case (Right(_), _) => wrong
-          case (_, Right(_)) => wrong
-          case _ => wrong
+          case (Right(_), Left(id)) => wrong(id)
+          case (Left(id), Right(_)) => wrong(id)
+          case (Left(id), _) => wrong(id)
         }
       }
     }
 }
+import Application._
 ```
+Remember, we don't have much business logic to test, just he library we
+built. Because our intent is almost fully defined in the types, the
+compiler can be used as an adequate testing utility. If our instances are
+summoned, our code is mostly correct.
+
+Our instances,
+```tut:silent
+trait One
+trait Two
+trait Three
+
+implicit def id1: TreeId[One] = TreeId[One](1)
+implicit def id2: TreeId[Two] = TreeId[Two](2)
+implicit def id3: TreeId[Three] = TreeId[Three](3)
+
+implicit def proc1: TreeProcessor.Aux[Tree1, A] =
+  TreeProcessor[Tree1, A](tree => 11)
+implicit def proc2: TreeProcessor.Aux[Tree2, B] =
+  TreeProcessor[Tree2, B](tree => "12")
+implicit def proc3: TreeProcessor.Aux[Tree3, C] =
+  TreeProcessor[Tree3, C](tree => 13.0)
+
+implicit def write1: Write[A] =
+  Write[A](println)
+implicit def write2: Write[B] =
+  Write[B](println)
+implicit def write3: Write[C] =
+  Write[C](println)
+```
+And here come the tests!
+```tut:book
+implicitly[Application[One, Tree1, A]]
+implicitly[Application[Two, Tree2, B]]
+implicitly[Application[Three, Tree3, C]]
+
+implicitly[Application[One XOR Two, Tree1 XOR Tree2, A XOR B]]
+implicitly[Application[Two, Tree2 AND Tree2, B AND B]]
+```
+We could test this all in one big go
+```tut:silent
+implicitly[Application[
+  One XOR Two XOR Three,
+  Tree1 XOR (Tree2 AND Tree2) XOR Tree3,
+  A XOR (B AND B) XOR C]]
+```
+But, then we lose traceability if a small breaking change is made.
+
+## Testing Logic
+One tests type driven logic the same as any other logic. We only have two
+pieces of logic `processCoproduct` and `processProduct`. Here goes
+```tut:book
+val processCopr =
+  implicitly[Application[One XOR Two, Tree1 XOR Tree2, A XOR B]]
+assert(Right(1) == processCopr.process(1))
+assert(Right(2) == processCopr.process(2))
+assert(Left("1, 2") == processCopr.process(3))
+
+val processProd =
+  implicitly[Application[Two, Tree2 AND Tree2, B AND B]]
+assert(Left("2") == processProd.process(1))
+assert(Right(2) == processProd.process(2))
+assert(Left("2") == processProd.process(3))
+```
+And we see the results we expect are the results we find!

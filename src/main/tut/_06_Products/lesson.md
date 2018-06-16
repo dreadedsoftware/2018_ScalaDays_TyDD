@@ -106,7 +106,7 @@ object Application{
           tProc.process(tree)
           Right(id)
         }else{
-          Left(id.toString)
+          Left(treeId.id.toString)
         }
       }
     }
@@ -146,13 +146,13 @@ implicit def process[Id, Tree1, Tree2](implicit
   app2: Application[Id, Tree2]): Application[Id, Tree1 AND Tree2] =
   new Application[Id, Tree1 AND Tree2]{
     override def process(id: Int): Either[String, Int] = {
-      def wrong = Left(id.toString)
+      def wrong(id: String) = Left(id)
       def right = Right(id)
       (app1.process(id), app2.process(id)) match{
         case (Right(_), Right(_)) => right
-        case (Right(_), _) => wrong
-        case (_, Right(_)) => wrong
-        case _ => wrong
+        case (Right(_), Left(id)) => wrong(id)
+        case (Left(id), Right(_)) => wrong(id)
+        case (Left(id), Left(_)) => wrong(id)
       }
     }
   }
@@ -170,7 +170,7 @@ object Application{
           tProc.process(tree)
           Right(id)
         }else{
-          Left(id.toString)
+          Left(treeId.id.toString)
         }
       }
     }
@@ -193,13 +193,13 @@ object Application{
     app2: Application[Id, Tree2]): Application[Id, Tree1 AND Tree2] =
     new Application[Id, Tree1 AND Tree2]{
       override def process(id: Int): Either[String, Int] = {
-        def wrong = Left(id.toString)
+        def wrong(id: String) = Left(id)
         def right = Right(id)
         (app1.process(id), app2.process(id)) match{
           case (Right(_), Right(_)) => right
-          case (Right(_), _) => wrong
-          case (_, Right(_)) => wrong
-          case _ => wrong
+          case (Right(_), Left(id)) => wrong(id)
+          case (Left(id), Right(_)) => wrong(id)
+          case (Left(id), _) => wrong(id)
         }
       }
     }

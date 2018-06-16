@@ -17,7 +17,7 @@ object Application{
           write.write(tProc.process(tree))
           Right(id)
         }else{
-          Left(id.toString)
+          Left(treeId.id.toString)
         }
       }
     }
@@ -40,7 +40,7 @@ object Application{
           write.write(tProc.process(tree))
           Right(id)
         }else{
-          Left(id.toString)
+          Left(treeId.id.toString)
         }
       }
     }
@@ -64,13 +64,13 @@ object Application{
     app2: Application[Id, Tree2, Out2]): Application[Id, Tree1 AND Tree2, Out1 AND Out2] =
     new Application[Id, Tree1 AND Tree2, Out1 AND Out2]{
       override def process(id: Int): Either[String, Int] = {
-        def wrong = Left(id.toString)
+        def wrong(id: String) = Left(id)
         def right = Right(id)
         (app1.process(id), app2.process(id)) match{
           case (Right(_), Right(_)) => right
-          case (Right(_), _) => wrong
-          case (_, Right(_)) => wrong
-          case _ => wrong
+          case (Right(_), Left(id)) => wrong(id)
+          case (Left(id), Right(_)) => wrong(id)
+          case (Left(id), _) => wrong(id)
         }
       }
     }
@@ -118,10 +118,10 @@ object Application{
           if(before){
             val afterVal = tProc.process(tree)
             write.write(afterVal)
-          }else Left(id.toString + ": input did not qa")
+          }else Left(treeId.id.toString + ": input did not qa")
           Right(id)
         }else{
-          Left(id.toString)
+          Left(treeId.id.toString)
         }
       }
     }
@@ -145,13 +145,13 @@ object Application{
     app2: Application[Id, Tree2, Out2]): Application[Id, Tree1 AND Tree2, Out1 AND Out2] =
     new Application[Id, Tree1 AND Tree2, Out1 AND Out2]{
       override def process(id: Int): Either[String, Int] = {
-        def wrong = Left(id.toString)
+        def wrong(id: String) = Left(id)
         def right = Right(id)
         (app1.process(id), app2.process(id)) match{
           case (Right(_), Right(_)) => right
-          case (Right(_), _) => wrong
-          case (_, Right(_)) => wrong
-          case _ => wrong
+          case (Right(_), Left(id)) => wrong(id)
+          case (Left(id), Right(_)) => wrong(id)
+          case (Left(id), _) => wrong(id)
         }
       }
     }
