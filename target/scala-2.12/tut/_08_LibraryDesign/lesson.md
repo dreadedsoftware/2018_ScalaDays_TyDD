@@ -200,7 +200,7 @@ us.
 We use composition in a few ways here. There is common function
 composition where outputs match inputs and multiple operations combine
 into a single larger operation. There is also composition of type classes
-which is represented as larger, more complex type classes. 
+which is represented as larger, more complex type classes.
 
 ## Divorce Definitions from Constructions
 This can be done in any language (it is even forced in some). The idea
@@ -283,3 +283,11 @@ This is especially important when there are 4 or more type parameters to keep
 track of.
 
 # Remember the law of least power
+If everywhere in your application, you use `Stream` just write functions
+for `Stream`; no reason to use write them for `F[_]`. There is no reason
+to abstract over something you are not abstracting over ^\_^.
+
+The purpose of type constructors is to construct types from other types;
+just like the point of class constructors is to construct values from
+other values. Abstraction for the sake of abstraction is like premature
+optimization and it should be avoided in most mature code bases.
