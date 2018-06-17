@@ -30,19 +30,19 @@ implicit def write3: Write[C] =
 And here come the tests!
 ```scala
 implicitly[Application[One, Tree1, A]]
-// res3: Application[One,Tree1,A] = Application$$anon$1@1dbdb07
+// res3: Application[One,Tree1,A] = Application$$anon$1@ef6688
 
 implicitly[Application[Two, Tree2, B]]
-// res4: Application[Two,Tree2,B] = Application$$anon$1@11e2fdb
+// res4: Application[Two,Tree2,B] = Application$$anon$1@bb6f3f
 
 implicitly[Application[Three, Tree3, C]]
-// res5: Application[Three,Tree3,C] = Application$$anon$1@451c63
+// res5: Application[Three,Tree3,C] = Application$$anon$1@144fdcc
 
 implicitly[Application[One XOR Two, Tree1 XOR Tree2, A XOR B]]
-// res6: Application[XOR[One,Two],XOR[Tree1,Tree2],XOR[A,B]] = Application$$anon$2@95106c
+// res6: Application[XOR[One,Two],XOR[Tree1,Tree2],XOR[A,B]] = Application$$anon$2@78b1ff
 
 implicitly[Application[Two, Tree2 AND Tree2, B AND B]]
-// res7: Application[Two,AND[Tree2,Tree2],AND[B,B]] = Application$$anon$3@5794bd
+// res7: Application[Two,AND[Tree2,Tree2],AND[B,B]] = Application$$anon$3@15c46df
 ```
 We could test this all in one big go
 ```scala
@@ -59,7 +59,7 @@ pieces of logic `processCoproduct` and `processProduct`. Here goes
 ```scala
 val processCopr =
   implicitly[Application[One XOR Two, Tree1 XOR Tree2, A XOR B]]
-// processCopr: Application[XOR[One,Two],XOR[Tree1,Tree2],XOR[A,B]] = Application$$anon$2@1cee94f
+// processCopr: Application[XOR[One,Two],XOR[Tree1,Tree2],XOR[A,B]] = Application$$anon$2@b6a48d
 
 assert(Right(1) == processCopr.process(1))
 // 11
@@ -71,7 +71,7 @@ assert(Left("1, 2") == processCopr.process(3))
 
 val processProd =
   implicitly[Application[Two, Tree2 AND Tree2, B AND B]]
-// processProd: Application[Two,AND[Tree2,Tree2],AND[B,B]] = Application$$anon$3@182d4a4
+// processProd: Application[Two,AND[Tree2,Tree2],AND[B,B]] = Application$$anon$3@8abf3
 
 assert(Left("2") == processProd.process(1))
 

@@ -215,7 +215,7 @@ assert(identity(a2) == g(f(a2)))
 assert(identity(a3) == g(f(a3)))
 ```
 We have shown that our erasure of the type parameters did not have any
-effect on the mathematical soundness of our monoids. Similarly, 
+effect on the mathematical soundness of our monoids.
 
 ## In Summation
 If we continue to refine our code we typically end up with something so
@@ -225,3 +225,7 @@ have been studying this stuff for millennia and have names ready for us!
 Along with names, there is an immense body of work inside of and outside
 of the software community; all we need is a willingness to be
 uncomfortable and internet access to follow along.
+
+#Exercises
+1. Show `processCoproduct` and `processProduct` are commutative
+semigroups by isomorphism.

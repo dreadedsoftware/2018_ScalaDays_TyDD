@@ -88,16 +88,16 @@ type App1 = Tree1 AND Tree2 AND Tree3
 // defined type alias App1
 
 implicit val app1 = implicitly[Application[One, Tree1]]
-// app1: Application[One,Tree1] = Application$$anon$1@16264d8
+// app1: Application[One,Tree1] = Application$$anon$1@a274a2
 
 implicit val app2 = implicitly[Application[One, Tree2]]
-// app2: Application[One,Tree2] = Application$$anon$1@df6773
+// app2: Application[One,Tree2] = Application$$anon$1@e35fa7
 
 implicit val app3 = implicitly[Application[One, Tree3]]
-// app3: Application[One,Tree3] = Application$$anon$1@1f7cab2
+// app3: Application[One,Tree3] = Application$$anon$1@74b9d8
 
 implicit val app = implicitly[Application[One, App1]]
-// app: Application[One,App1] = Application$$anon$3@a0b648
+// app: Application[One,App1] = Application$$anon$3@13daf5f
 ```
 
 ## Write two more Product trees.
@@ -156,22 +156,22 @@ implicit def id3: TreeId[Three] = TreeId.create[Three](3)
 `TreeProcessor` instances
 ```scala
 implicit val processor21 = TreeProcessor.create[Tree21](println)
-// processor21: TreeProcessor[Tree21] = TreeProcessor$$anon$1@196ca17
+// processor21: TreeProcessor[Tree21] = TreeProcessor$$anon$1@1780749
 
 implicit val processor22 = TreeProcessor.create[Tree22](println)
-// processor22: TreeProcessor[Tree22] = TreeProcessor$$anon$1@1e251a3
+// processor22: TreeProcessor[Tree22] = TreeProcessor$$anon$1@1e14201
 
 implicit val processor23 = TreeProcessor.create[Tree23](println)
-// processor23: TreeProcessor[Tree23] = TreeProcessor$$anon$1@11e305c
+// processor23: TreeProcessor[Tree23] = TreeProcessor$$anon$1@55f9e5
 
 implicit val processor31 = TreeProcessor.create[Tree31](println)
-// processor31: TreeProcessor[Tree31] = TreeProcessor$$anon$1@76efbd
+// processor31: TreeProcessor[Tree31] = TreeProcessor$$anon$1@1ddbbd1
 
 implicit val processor32 = TreeProcessor.create[Tree32](println)
-// processor32: TreeProcessor[Tree32] = TreeProcessor$$anon$1@18e97e2
+// processor32: TreeProcessor[Tree32] = TreeProcessor$$anon$1@1ebf078
 
 implicit val processor33 = TreeProcessor.create[Tree33](println)
-// processor33: TreeProcessor[Tree33] = TreeProcessor$$anon$1@c15599
+// processor33: TreeProcessor[Tree33] = TreeProcessor$$anon$1@1db870d
 ```
 Finally, we put all the pieces together
 ```scala
@@ -182,28 +182,28 @@ type App3 = Tree31 AND Tree32 AND Tree33
 // defined type alias App3
 
 implicit val app21 = implicitly[Application[Two, Tree21]]
-// app21: Application[Two,Tree21] = Application$$anon$1@fa3b6d
+// app21: Application[Two,Tree21] = Application$$anon$1@1b85356
 
 implicit val app22 = implicitly[Application[Two, Tree22]]
-// app22: Application[Two,Tree22] = Application$$anon$1@2ab9c2
+// app22: Application[Two,Tree22] = Application$$anon$1@b73aa8
 
 implicit val app23 = implicitly[Application[Two, Tree23]]
-// app23: Application[Two,Tree23] = Application$$anon$1@fa0a38
+// app23: Application[Two,Tree23] = Application$$anon$1@1b10c7
 
 implicit val app31 = implicitly[Application[Three, Tree31]]
-// app31: Application[Three,Tree31] = Application$$anon$1@1ca6d83
+// app31: Application[Three,Tree31] = Application$$anon$1@d3aaf7
 
 implicit val app32 = implicitly[Application[Three, Tree32]]
-// app32: Application[Three,Tree32] = Application$$anon$1@be6ab2
+// app32: Application[Three,Tree32] = Application$$anon$1@1b1ec60
 
 implicit val app33 = implicitly[Application[Three, Tree33]]
-// app33: Application[Three,Tree33] = Application$$anon$1@1325b9a
+// app33: Application[Three,Tree33] = Application$$anon$1@608c
 
 implicit val app2 = implicitly[Application[Two, App2]]
-// app2: Application[Two,App2] = Application$$anon$3@e3fb39
+// app2: Application[Two,App2] = Application$$anon$3@ed3431
 
 implicit val app3 = implicitly[Application[Three, App3]]
-// app3: Application[Three,App3] = Application$$anon$3@73bb54
+// app3: Application[Three,App3] = Application$$anon$3@1b2bb25
 ```
 
 ## Write a Coproduct tree from the 3 Product trees in the previous exercises.
@@ -211,7 +211,7 @@ After the other two parts, this falls out pretty quickly.
 ```scala
 val application =
   implicitly[Application[One XOR Two XOR Three, App1 XOR App2 XOR App3]]
-// application: Application[XOR[XOR[One,Two],Three],XOR[XOR[App1,App2],App3]] = Application$$anon$2@11154a7
+// application: Application[XOR[XOR[One,Two],Three],XOR[XOR[App1,App2],App3]] = Application$$anon$2@4be032
 ```
 
 # Making Changes

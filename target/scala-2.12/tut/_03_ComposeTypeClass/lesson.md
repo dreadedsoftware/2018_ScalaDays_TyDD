@@ -185,12 +185,12 @@ zip5[List, Tuple2, String, Int, Double, Long, Char]
 for `And`
 ```scala
 zip5[List, And, Int, String, Double, Long, Char]
-// res4: List[And[Int,And[String,And[Double,And[Long,Char]]]]] = List($anon$1$$anon$2@1f18efa)
+// res4: List[And[Int,And[String,And[Double,And[Long,Char]]]]] = List($anon$1$$anon$2@1e6f537)
 ```
 And finally `Or`
 ```scala
 zip5[List, Or, Int, String, Double, Long, Char]
-// res5: List[Or[Int,Or[String,Or[Double,Or[Long,Char]]]]] = List($anon$1$$anon$2@1d2f09)
+// res5: List[Or[Int,Or[String,Or[Double,Or[Long,Char]]]]] = List($anon$1$$anon$2@ca044f)
 ```
 The business logic need not change. All we need to do is make sure all of our type class instances are in scope and we can rearrange and redeclare at will. Type Driven Development is the most declarative discipline I have found; declare a bunch of types and instances, the compiler does the rest.
 

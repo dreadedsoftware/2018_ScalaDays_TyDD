@@ -24,7 +24,7 @@ implicit def zipListTuple2: Zip[F, G] = new Zip[F, G]{
 Then we write our test cases
 ```scala
 implicitly[Zip[F, G]]
-// res1: Zip[F,G] = $anon$1@c98cd7
+// res1: Zip[F,G] = $anon$1@11f720c
 ```
 That is the test for summoning the type class instance! We create more
 and more `implicitly` calls to test the rest. But first some type aliases
