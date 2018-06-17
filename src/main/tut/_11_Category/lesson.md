@@ -165,7 +165,57 @@ arrow, `g: b -> a`, `a` and `b` are isomorphic if and only if
 be treated as the same object. All we need to do is show our isomorphism
 and we prove categorical equivalence.
 
+For `Tuple2`
+```tut:silent
+def f[A, B, C](_a: (A, (B, C))): ((A, B), C) = {
+  val (a, (b, c)) = _a
+  ((a, b), c)}
+def g[A, B, C](_b: ((A, B), C)): (A, (B, C)) = {
+  val ((a, b), c) = _b
+  (a, (b, c))}
 
+//One should really write property based tests for this in production!!!
+val (x, y, z) = (1, "2", '3')
+val a = (x, (y, z))
+val b = ((x, y), z)
+assert(identity(b) == f(g(b)))
+assert(identity(a) == g(f(a)))
+```
+And for `Either`
+```tut:silent
+def f[A, B, C](a: Either[A, Either[B, C]]): Either[Either[A, B], C] =
+  a.fold(
+    a => Left(Left(a)),
+    _.fold(
+      b => Left(Right(b)),
+      c => Right(c)))
+def g[A, B, C](b: Either[Either[A, B], C]): Either[A, Either[B, C]] =
+  b.fold(
+    _.fold(
+      a => Left(a),
+      b => Right(Left(b))),
+    c => Right(Right(c)))
+
+//One should really write property based tests for this in production!!!
+val (x, y, z) = (1, "2", '3')
+type A = Either[Int, Either[String, Char]]
+type B = Either[Either[Int, String], Char]
+val a1: A = Left(x)
+val a2: A = Right(Left(y))
+val a3: A = Right(Right(z))
+val b1: B = Left(Left(x))
+val b2: B = Left(Right(y))
+val b3: B = Right(z)
+assert(identity(b1) == f(g(b1)))
+assert(identity(b2) == f(g(b2)))
+assert(identity(b3) == f(g(b3)))
+
+assert(identity(a1) == g(f(a1)))
+assert(identity(a2) == g(f(a2)))
+assert(identity(a3) == g(f(a3)))
+```
+We have shown that our erasure of the type parameters did not have any
+effect on the mathematical soundness of our monoids. Similarly, 
 
 ## In Summation
 If we continue to refine our code we typically end up with something so

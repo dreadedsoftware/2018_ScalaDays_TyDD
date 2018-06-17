@@ -1,3 +1,88 @@
+
+
+
+# Previous Exercises
+## Write tests for the Application.
+First our instances,
+```scala
+trait One
+trait Two
+trait Three
+
+implicit def id1: TreeId[One] = TreeId[One](1)
+implicit def id2: TreeId[Two] = TreeId[Two](2)
+implicit def id3: TreeId[Three] = TreeId[Three](3)
+
+implicit def proc1: TreeProcessor.Aux[Tree1, A] =
+  TreeProcessor[Tree1, A](tree => 11)
+implicit def proc2: TreeProcessor.Aux[Tree2, B] =
+  TreeProcessor[Tree2, B](tree => "12")
+implicit def proc3: TreeProcessor.Aux[Tree3, C] =
+  TreeProcessor[Tree3, C](tree => 13.0)
+
+implicit def write1: Write[A] =
+  Write[A](println)
+implicit def write2: Write[B] =
+  Write[B](println)
+implicit def write3: Write[C] =
+  Write[C](println)
+```
+And here come the tests!
+```scala
+implicitly[Application[One, Tree1, A]]
+// res3: Application[One,Tree1,A] = Application$$anon$1@1dbdb07
+
+implicitly[Application[Two, Tree2, B]]
+// res4: Application[Two,Tree2,B] = Application$$anon$1@11e2fdb
+
+implicitly[Application[Three, Tree3, C]]
+// res5: Application[Three,Tree3,C] = Application$$anon$1@451c63
+
+implicitly[Application[One XOR Two, Tree1 XOR Tree2, A XOR B]]
+// res6: Application[XOR[One,Two],XOR[Tree1,Tree2],XOR[A,B]] = Application$$anon$2@95106c
+
+implicitly[Application[Two, Tree2 AND Tree2, B AND B]]
+// res7: Application[Two,AND[Tree2,Tree2],AND[B,B]] = Application$$anon$3@5794bd
+```
+We could test this all in one big go
+```scala
+implicitly[Application[
+  One XOR Two XOR Three,
+  Tree1 XOR (Tree2 AND Tree2) XOR Tree3,
+  A XOR (B AND B) XOR C]]
+```
+But, then we lose traceability if a small breaking change is made.
+
+### Testing Logic
+One tests type driven logic the same as any other logic. We only have two
+pieces of logic `processCoproduct` and `processProduct`. Here goes
+```scala
+val processCopr =
+  implicitly[Application[One XOR Two, Tree1 XOR Tree2, A XOR B]]
+// processCopr: Application[XOR[One,Two],XOR[Tree1,Tree2],XOR[A,B]] = Application$$anon$2@1cee94f
+
+assert(Right(1) == processCopr.process(1))
+// 11
+
+assert(Right(2) == processCopr.process(2))
+// 12
+
+assert(Left("1, 2") == processCopr.process(3))
+
+val processProd =
+  implicitly[Application[Two, Tree2 AND Tree2, B AND B]]
+// processProd: Application[Two,AND[Tree2,Tree2],AND[B,B]] = Application$$anon$3@182d4a4
+
+assert(Left("2") == processProd.process(1))
+
+assert(Right(2) == processProd.process(2))
+// 12
+// 12
+
+assert(Left("2") == processProd.process(3))
+```
+And we see the results we expect are the results we find!
+
 # Drawbacks of Type Driven Development
 There are many benefits to writing code in this discipline. Our business
 logic becomes super clean and the compiler enforces a certain look in
