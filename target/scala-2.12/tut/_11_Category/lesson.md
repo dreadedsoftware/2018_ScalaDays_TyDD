@@ -32,7 +32,7 @@ from C to D would define
     - preserves the Identity
     - preserves composition
 
-## Used in our Application
+## In Our Work
 Category Theory (as always) can be applied to our work to make more sense
 of it. Let's take our `Zip` and `Unzip`
 ```scala
@@ -107,7 +107,7 @@ implicit def zipListEither: Zip[List, Either] = new Zip[List, Either]{
 The full intent of the operation is conveyed by the type signature. This
 is the only reasonable (we could return `Nil`) way to write this function.
 
-## Traverse
+### Traverse
 What we have created performs the work of `G[F, F] => F[G]` and
 `F[G] => G[F, F]`. There is an operation common to functional programming
 libraries (such as scalaz and cats) referred to as a `Traverse`. This
@@ -121,7 +121,59 @@ trait Bitraverse[F[_], G[_, _]] extends Zip[F, G] with Unzip[F, G]
 What this says is given a `Functor`, F, and a `Bifunctor`, G, we are
 guaranteed functions which can "flip the nesting" of their composition.
 
+### Semigroup
+Take our Application combination functions
+```scala
+implicit def processCoproduct[Id1, Id2, Tree1, Tree2, Out1, Out2](implicit
+  app1: Application[Id1, Tree1, Out1],
+  app2: Application[Id2, Tree2, Out2]): Application[Id1 XOR Id2, Tree1 XOR Tree2, Out1 XOR Out2] = ???
+implicit def processProduct[Id, Tree1, Tree2, Out1, Out2](implicit
+  app1: Application[Id, Tree1, Out1],
+  app2: Application[Id, Tree2, Out2]): Application[Id, Tree1 AND Tree2, Out1 AND Out2] = ???
+```
+Already a symmetry is beginning to emerge. Now, taking just the types
+```scala
+(Application[Id1, Tree1, Out1], Application[Id2, Tree2, Out2]) =>
+  Application[Id1 XOR Id2, Tree1 XOR Tree2, Out1 XOR Out2]
+(Application[Id, Tree1, Out1], Application[Id, Tree2, Out2]) =>
+  Application[Id, Tree1 AND Tree2, Out1 AND Out2]
+```
+And the symmetry becomes a bit clearer when we remove the parameters
+```scala
+(Application, Application) => Application
+(Application, Application) => Application
+```
+They look the same when viewed in this context! Much of the work in
+abstraction and analysis is about looking at the body of work in a new
+way or from a new perspective. This is no different.
+
+All we are doing is taking two `Application`s and generating a new
+`Application` by combining them. Again, there is an abstract idea for
+this. This is a `Semigroup`. A semigroup over a structure defines a
+closed, associative binary operator.
+
+### Isomophism
+When we abstract we lose data such that two seemingly dissimilar ideas
+may be treated in an identical manner. We need to be cautious of this.
+The above section on the semigroup looks sound but is it really? Given
+three `Application`s do we have associativity? This is the same question
+as is `(A, (B, C))` the same as `((A, B), C)` and is
+`Either[A, Either[B, C]]` the same as `Either[Either[A, B], C]`?
+
+In Category Theory, they are the same! The idea of isomorphism is that
+given two objects, `a` and `b`, if there is an arrow, `f: a -> b`, and an
+arrow, `g: b -> a`, `a` and `b` are isomorphic if and only if
+`f(g) = ida` and `g(f) = idb`. If two objects are isomorphic they can
+be treated as the same object. All we need to do is show our isomorphism
+and we prove categorical equivalence.
+
+
+
 ## In Summation
 If we continue to refine our code we typically end up with something so
 abstract we cannot name it. Fortunately, a lot of really smart people
-have been studying this stuff for millenia and have names ready for us!
+have been studying this stuff for millennia and have names ready for us!
+
+Along with names, there is an immense body of work inside of and outside
+of the software community; all we need is a willingness to be
+uncomfortable and internet access to follow along.
