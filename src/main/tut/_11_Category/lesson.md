@@ -117,4 +117,9 @@ give us Bitraverse
 trait Bitraverse[F[_], G[_, _]] extends Zip[F, G] with Unzip[F, G]
 ```
 What this says is given a `Functor`, F, and a `Bifunctor`, G, we are
-guaranteed functions which can "flip the nesting" of a structure.
+guaranteed functions which can "flip the nesting" of their composition.
+
+## In Summation
+If we continue to refine our code we typically end up with something so
+abstract we cannot name it. Fortunately, a lot of really smart people
+have been studying this stuff for millenia and have names ready for us!
