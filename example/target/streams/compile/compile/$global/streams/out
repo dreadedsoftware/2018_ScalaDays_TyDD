@@ -1,0 +1,4 @@
+[0m[[0m[31merror[0m] [0m[0mC:\Users\dread\source\repos\2018_ScalaDays_TyDD\example\slist.scala:52:13: could not find implicit value for parameter e: Main.StringsAndInts[String :: Char :: String :: shapeless.HNil][0m
+[0m[[0m[31merror[0m] [0m[0m  implicitly[StringsAndInts[String :: Char :: String :: HNil]][0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m
