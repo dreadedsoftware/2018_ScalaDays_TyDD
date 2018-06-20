@@ -6,3 +6,4 @@
 .vs
 project/target
 target/streams
+example/target
